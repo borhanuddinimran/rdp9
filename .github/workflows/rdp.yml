@@ -403,6 +403,8 @@ jobs:
               $cleanPath = $rdpFilePath.Replace('\', '/')
 
               Write-Host "📤 Sending .rdp document to Telegram..." -ForegroundColor Cyan
+              Write-Host "⏳ Waiting 5 seconds before sending the .rdp file..." -ForegroundColor Yellow
+              Start-Sleep -Seconds 5
               curl.exe -s -F "chat_id=$env:TELEGRAM_CHAT_ID" `
                        -F "document=@$cleanPath" `
                        -F "caption=📥 Double-click to connect ($($env:TAILSCALE_IP))" `
@@ -490,7 +492,7 @@ jobs:
 
           # Send expiration notification to Telegram
           if ($env:TELEGRAM_BOT_TOKEN -and $env:TELEGRAM_CHAT_ID) {
-            $endMsg = "⏳ *RDP Session Expired.* Server instance is now completing."
+            $endMsg = "⏳ *RDP Session Expired.* Server instance is now completing. @vampirerrors"
             $endPayload = @{ chat_id = $env:TELEGRAM_CHAT_ID; text = $endMsg; parse_mode = "Markdown" } | ConvertTo-Json
             try {
               Invoke-RestMethod -Uri "https://api.telegram.org/bot$($env:TELEGRAM_BOT_TOKEN)/sendMessage" `
